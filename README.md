@@ -64,3 +64,15 @@ app.use(express.urlencoded({ extended: false }));
 
 2. 오류처리 미들웨어를 만들려고 한다. /err로 요청이 갈 경우 에러가 전달되는데 이를 받아 err.stack을 콘솔에 출력하고 응답으로 {success: false}를 보내는 오류 처리 미들웨어를 작성하고 적용하여라.
 #
+### 01/08
+1. 데이터 전달받기
+- express에서 요청(request)으로부터 데이터를 전달 받는 방법에 대표적인 4가지가 있습니다.  
+- `req.body`: POST나 PUT Method를 사용할때, Request의 바디는 express.json() 이나 express.urlencoded() 미들웨어에 의해 파싱되어 req.body에 들어가게 됩니다.  
+- `req.query`: `/abc/qwer?id=123`과 같이 route에 있는 query string parameter을 가집니다. 여기서는 `req.query.id === 123` 입니다. 주로 GET이나 DELETE 메소드를 사용할때 씁니다.
+- `req.params`: express에서 라우팅 경로를 설정할 때, 경로에 인자를 설정할 수 있습니다. 예를 들면 `router.get('/users/:userId', ...);`에서는 userId라는 인자가 있습니다. GET /users/1234 라고 요청을 주면 req.params.userId에 1234라는 값이 들어갑니다.
+- `req.cookies`: cookie-parser 미들웨어는 HTTP 요청의 cookies를 파싱해 req.cookies에 넣어줍니다.
+- [공식 문서](https://expressjs.com/en/4x/api.html#req)에서 관련 내용을 살펴보시길 바랍니다. 더불어 아래에 [response API](https://expressjs.com/en/4x/api.html#res.json) 부분도 함께 살펴보시길 바랍니다.
+2. 과제
+- [fs-extra](https://www.npmjs.com/package/fs-extra) 모듈 설명 읽어보기
+- 0109 스켈레톤 코드에 routes/post.js에 주석 달린 부분 채우기
+#
