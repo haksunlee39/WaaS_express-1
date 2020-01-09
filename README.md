@@ -64,7 +64,7 @@ app.use(express.urlencoded({ extended: false }));
 
 2. 오류처리 미들웨어를 만들려고 한다. /err로 요청이 갈 경우 에러가 전달되는데 이를 받아 err.stack을 콘솔에 출력하고 응답으로 {success: false}를 보내는 오류 처리 미들웨어를 작성하고 적용하여라.
 #
-### 01/08
+### 01/09
 1. 데이터 전달받기
 - express에서 요청(request)으로부터 데이터를 전달 받는 방법에 대표적인 4가지가 있습니다.  
 - `req.body`: POST나 PUT Method를 사용할때, Request의 바디는 express.json() 이나 express.urlencoded() 미들웨어에 의해 파싱되어 req.body에 들어가게 됩니다.  
@@ -75,4 +75,60 @@ app.use(express.urlencoded({ extended: false }));
 2. 과제
 - [fs-extra](https://www.npmjs.com/package/fs-extra) 모듈 설명 읽어보기
 - 0109 스켈레톤 코드에 routes/post.js에 주석 달린 부분 채우기
+#
+### 01/10
+1. async/await
+- [참고자료1](https://victorydntmd.tistory.com/87)  
+[참고자료2](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/async_function)
+
+- 비동기 함수를 처리하기 위해 callback 함수를 사용하는 것은 가독성이 떨어지고 오류를 잡기 힘들어집니다. 그래서 promise라는 것이 생겼습니다.
+- 하지만 promise 또한 가독성이 썩 좋진 않아 ES8에서는 promise를 대체할 수 있는 async/await이 생겼고 Nodejs에서는 버전 7부터 지원하고 있습니다.
+- 다른 좋은 자료가 많으니 참고자료나 다른 자료를 읽어보시고 이해 안되시는 부분은 질문주세요.
+2. express에서 async/await 사용
+- [참고자료](https://programmingsummaries.tistory.com/399)
+- express에서 async 함수를 사용하면 error를 캐치하지 못합니다.
+```js
+router.get('/sync', function(req, res, next) {
+  throw new Error('qwer');
+});
+router.get('/async', async function(req, res, next) {
+  throw new Error('asdf');
+});
+router.get('/async-with-try-catch', async function(req, res, next) {
+  try {
+    throw new Error('asdf');
+  } catch (err) {
+    next(err);
+  }
+});
+router.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).json({msg: 'error occur!'});
+});
+
+/**
+ * GET /sync => 500 {msg: 'error occur!'}
+ * GET /async => 응답이 오지 않음
+ * GET /async-with-try-catch => 500 {msg: 'error occur!'}
+ * /
+```
+- 그래서 [try ... catch 구문](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/try...catch)을 사용해 직접 next를 실행해 에러를 넘겨주어야 합니다.
+
+2. 과제
+- 5초, 3초, 1초 후에 a, b, c를 각각 출력하는 함수를 만들고 async/await을 이용해 5초, 8초, 9초에 a, b, c가 각각 출력하도록 하는 async 함수를 만들어라.
+- 만든 async 함수 내에서 가장 아래에 throw new Error('error')를 추가하고 아래 코드를 사용해 테스트 해보아라. 0109의 routes/index.js에 넣어 확인해볼것
+```js
+router.get('/async', async function(req, res, next) {
+  try {
+    // await asyncFnYouMake();
+  } catch (err) {
+    next(err);
+  }
+});
+router.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).json({msg: 'error occur!'});
+});
+
+```
 #
