@@ -61,8 +61,35 @@ app.use(myMiddleware1);
 app.use(express.json());  
 app.use(express.urlencoded({ extended: false }));  
 이후에 작성되어야 req.body를 사용할 수 있습니다.
+```js
+app.use(bodyParser.json());
+
+const noXss = (req, res, next) => {
+    console.log(req.body);
+    if(req.body.includes('<script>')){
+        res.status(400).send('Nope');
+    } else {
+        next();
+    }
+};
+
+//app.use(bodyParser.raw());
+app.use(bodyParser.text({type: '*/*'}));
+
+app.post('/', noXss);
+```
+이런식으로 bodyParser를 이용해 text를 받아온 후 \<srcipt> 가 들어 가있으면 오류 400을 반환한다
 
 2. 오류처리 미들웨어를 만들려고 한다. /err로 요청이 갈 경우 에러가 전달되는데 이를 받아 err.stack을 콘솔에 출력하고 응답으로 {success: false}를 보내는 오류 처리 미들웨어를 작성하고 적용하여라.
+
+```js
+router.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({success: false});
+})
+```
+- 이런식으로 에러를 받아올 수 있음!
+
 #
 ### 01/09
 1. 데이터 전달받기
